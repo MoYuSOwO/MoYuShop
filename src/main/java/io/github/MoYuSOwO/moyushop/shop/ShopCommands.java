@@ -97,6 +97,7 @@ public class ShopCommands {
                     () -> Component.literal("[商店系统] 购买成功！"),
                     false
             );
+            if (player.getServer() == null) return false;
             Player seller = player.getServer().getPlayerList().getPlayer(shopItem.sellerUuid());
             if (seller != null) {
                 Economy.deposit(seller, shopItem.price());
