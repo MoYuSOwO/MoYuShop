@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Util {
 
-    private static double coinPrice = 50;
+    private static double coinPrice = 5;
     private static final ResourceLocation itemId = ResourceLocation.parse("libraryferret:gold_coins_jtl");
     private static final Item targetItem = BuiltInRegistries.ITEM.get(itemId);
 
