@@ -10,4 +10,9 @@ public record ShopItem(
         ItemStack item,
         double price
 ) {
+    public boolean sellItem(int amount) {
+        if (amount > item.getCount()) return false;
+        item.shrink(amount);
+        return true;
+    }
 }
