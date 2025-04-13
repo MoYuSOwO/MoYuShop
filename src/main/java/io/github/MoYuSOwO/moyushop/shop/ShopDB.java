@@ -74,6 +74,19 @@ public class ShopDB {
         }
     }
 
+    public static void replaceItem(int itemId, ItemStack item) {
+        String sql = """
+                    UPDATE shop_items SET item_stack = ? WHERE id = ?
+                    """;
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, serializeItemStack(item));
+            pstmt.setInt(2, itemId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            Moyushop.LOGGER.error("替换物品错误: ", e);
+        }
+    }
+
     public static List<ShopItem> getAllItems() {
         List<ShopItem> items = new ArrayList<>();
         String sql = "SELECT * FROM shop_items";

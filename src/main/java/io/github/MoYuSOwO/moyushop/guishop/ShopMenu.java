@@ -25,21 +25,31 @@ import java.util.List;
 public class ShopMenu extends AbstractContainerMenu {
 
     private static final int itemsPerPage = 28;
+    private static final int[] toId = new int[] {
+            -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, 0, 1, 2, 3, 4, 5, 6, -1,
+            -1, 7, 8, 9, 10, 11, 12, 13, -1,
+            -1, 14, 15, 16, 17, 18, 19, 20, -1,
+            -1, 21, 22, 23, 24, 25, 26, 27, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1
+    };
     private final List<ShopItem> items;
     private final int page;
     private final int maxPage;
     private final IItemHandler itemHandler;
+    private final ServerPlayer player;
 
-    public ShopMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, 1);
+    public ShopMenu(int containerId, Inventory playerInventory, ServerPlayer player) {
+        this(containerId, playerInventory, player, 1);
     }
 
-    public ShopMenu(int containerId, Inventory playerInventory, int page) {
+    public ShopMenu(int containerId, Inventory playerInventory, ServerPlayer player, int page) {
         super(MenuType.GENERIC_9x6, containerId);
         this.page = page;
         this.items = ShopDB.getAllItems();
         this.itemHandler = new ItemStackHandler(54);
         this.maxPage = Math.max(1, (int) Math.ceil(items.size() / (double) itemsPerPage));
+        this.player = player;
         for(int row = 0; row < 6; ++row) {
             for(int col = 0; col < 9; ++col) {
                 this.addSlot(new ShopItemHandler(
@@ -98,7 +108,7 @@ public class ShopMenu extends AbstractContainerMenu {
                 }
                 loreLines.add(
                         Component.empty().append(
-                                        Component.literal("价格")
+                                        Component.literal("单价")
                                                 .withStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(false))
                                 ).append(
                                         Component.literal(": ")
@@ -108,10 +118,17 @@ public class ShopMenu extends AbstractContainerMenu {
                                                 .withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN).withItalic(false))
                                 )
                 );
-                loreLines.add(
-                        Component.literal("鼠标左键进入购买页面")
-                                .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD).withItalic(false))
-                );
+                if (!items.get(itemId).sellerUuid().equals(player.getUUID())) {
+                    loreLines.add(
+                            Component.literal("鼠标左键进入购买页面")
+                                    .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD).withItalic(false))
+                    );
+                } else {
+                    loreLines.add(
+                            Component.literal("鼠标左键下架")
+                                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withItalic(false))
+                    );
+                }
                 ItemLore newitemLore = new ItemLore(loreLines);
                 item.set(DataComponents.LORE, newitemLore);
                 itemHandler.insertItem(row * 9 + col, item, false);
@@ -155,6 +172,16 @@ public class ShopMenu extends AbstractContainerMenu {
             ShopCommands.replaceShop((ServerPlayer) player, page - 1);
         } else if (slotId == 51 && page < maxPage) {
             ShopCommands.replaceShop((ServerPlayer) player, page + 1);
+        } else if (slotId < toId.length && toId[slotId] != -1) {
+            int arrayId = (page - 1) * itemsPerPage + toId[slotId];
+            if (player.getUUID().equals(items.get(arrayId).sellerUuid())) {
+                ShopDB.removeItem(items.get(arrayId).id());
+                player.getInventory().add(items.get(arrayId).item().copy());
+                player.closeContainer();
+                player.sendSystemMessage(Component.literal("[商店系统] 下架成功！").withStyle(ChatFormatting.GREEN));
+            } else {
+                ShopCommands.openBuy((ServerPlayer) player, items.get(arrayId).id());
+            }
         } else {
             super.clicked(slotId, button, clickType, player);
         }
