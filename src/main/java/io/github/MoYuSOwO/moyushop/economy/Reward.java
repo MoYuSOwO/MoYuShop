@@ -1,11 +1,8 @@
-package io.github.MoYuSOwO.moyushop;
+package io.github.MoYuSOwO.moyushop.economy;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import io.github.MoYuSOwO.moyushop.economy.Economy;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -13,48 +10,23 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Util {
+public class Reward {
 
     private static double coinPrice = 5;
     private static final ResourceLocation itemId = ResourceLocation.parse("libraryferret:gold_coins_jtl");
     private static final Item targetItem = BuiltInRegistries.ITEM.get(itemId);
-
-    @SubscribeEvent
-    public static void setHealth(RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal("setHealth")
-                .requires(source -> source.hasPermission(2))
-                .then(Commands.argument("target", EntityArgument.player())
-                        .then(Commands.argument("amount", FloatArgumentType.floatArg(1.0F))
-                                .executes(
-                                        ctx -> {
-                                            ServerPlayer target = EntityArgument.getPlayer(ctx, "target");
-                                            float amount = FloatArgumentType.getFloat(ctx, "amount");
-                                            target.setHealth(amount);
-                                            return 1;
-                                        }
-                                )
-                        )
-                )
-        );
-    }
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
@@ -105,24 +77,6 @@ public class Util {
                             item
                     )
             );
-        }
-    }
-
-    @SubscribeEvent
-    public static void onExplosion(ExplosionEvent.Detonate event) {
-        if (event.getExplosion().getDirectSourceEntity() != null) {
-            var directSource = event.getExplosion().getDirectSourceEntity();
-            var indirectSource = event.getExplosion().getIndirectSourceEntity();
-            if (directSource instanceof Creeper || directSource instanceof Ghast || indirectSource instanceof Creeper || indirectSource instanceof Ghast) {
-                event.getAffectedBlocks().clear();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onMobGriefing(EntityMobGriefingEvent event) {
-        if (event.getEntity() instanceof EnderMan) {
-            event.setCanGrief(false);
         }
     }
 
@@ -221,5 +175,4 @@ public class Util {
             }
         }
     }
-
 }
