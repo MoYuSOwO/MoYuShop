@@ -1,20 +1,18 @@
 package io.github.MoYuSOwO.moyushop;
 
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.logging.LogUtils;
-import io.github.MoYuSOwO.moyushop.economy.Economy;
+import io.github.MoYuSOwO.moyushop.economy.EconomyCommands;
 import io.github.MoYuSOwO.moyushop.economy.EconomyDB;
+import io.github.MoYuSOwO.moyushop.economy.Reward;
 import io.github.MoYuSOwO.moyushop.shop.ShopCommands;
 import io.github.MoYuSOwO.moyushop.shop.ShopDB;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.server.level.ServerPlayer;
+import io.github.MoYuSOwO.moyushop.util.AntiMobGriefing;
+import io.github.MoYuSOwO.moyushop.util.FixFakeDeath;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -22,16 +20,18 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
-@Mod(Moyushop.MODID)
+@Mod(Moyushop.MOD_ID)
 public class Moyushop {
-    public static final String MODID = "moyushop";
+    public static final String MOD_ID = "moyushop";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public Moyushop(IEventBus modEventBus) {
         NeoForge.EVENT_BUS.register(Moyushop.class);
-        NeoForge.EVENT_BUS.register(Economy.class);
-        NeoForge.EVENT_BUS.register(Util.class);
+        NeoForge.EVENT_BUS.register(EconomyCommands.class);
+        NeoForge.EVENT_BUS.register(FixFakeDeath.class);
         NeoForge.EVENT_BUS.register(ShopCommands.class);
+        NeoForge.EVENT_BUS.register(Reward.class);
+        NeoForge.EVENT_BUS.register(AntiMobGriefing.class);
     }
 
     @SubscribeEvent
