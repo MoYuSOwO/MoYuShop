@@ -4,10 +4,13 @@ import com.mojang.logging.LogUtils;
 import io.github.MoYuSOwO.moyushop.economy.EconomyCommands;
 import io.github.MoYuSOwO.moyushop.economy.EconomyDB;
 import io.github.MoYuSOwO.moyushop.economy.Reward;
+import io.github.MoYuSOwO.moyushop.guishop.ShopMenu;
 import io.github.MoYuSOwO.moyushop.shop.ShopCommands;
 import io.github.MoYuSOwO.moyushop.shop.ShopDB;
 import io.github.MoYuSOwO.moyushop.util.AntiMobGriefing;
 import io.github.MoYuSOwO.moyushop.util.FixFakeDeath;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,9 +19,11 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 @Mod(Moyushop.MOD_ID)
 public class Moyushop {
@@ -32,6 +37,7 @@ public class Moyushop {
         NeoForge.EVENT_BUS.register(ShopCommands.class);
         NeoForge.EVENT_BUS.register(Reward.class);
         NeoForge.EVENT_BUS.register(AntiMobGriefing.class);
+        NeoForge.EVENT_BUS.register(io.github.MoYuSOwO.moyushop.guishop.ShopCommands.class);
     }
 
     @SubscribeEvent
