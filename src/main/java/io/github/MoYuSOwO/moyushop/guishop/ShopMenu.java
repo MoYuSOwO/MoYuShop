@@ -30,7 +30,7 @@ public class ShopMenu extends AbstractContainerMenu {
     private final int maxPage;
     private final IItemHandler itemHandler;
 
-    public ShopMenu(int containerId, Inventory playerInventory) { // 如果需要从服务器读取数据，可选FriendlyByteBuf参数
+    public ShopMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, 1);
     }
 
