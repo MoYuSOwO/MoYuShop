@@ -1,4 +1,4 @@
-package io.github.MoYuSOwO.moyushop.guishop;
+package io.github.MoYuSOwO.moyushop.shop;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

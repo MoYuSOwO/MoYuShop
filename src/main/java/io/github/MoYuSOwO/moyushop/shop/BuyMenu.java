@@ -1,7 +1,5 @@
-package io.github.MoYuSOwO.moyushop.guishop;
+package io.github.MoYuSOwO.moyushop.shop;
 
-import io.github.MoYuSOwO.moyushop.shop.ShopDB;
-import io.github.MoYuSOwO.moyushop.shop.ShopItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -24,9 +22,18 @@ import java.util.List;
 
 public class BuyMenu extends AbstractContainerMenu {
 
+    private static final int itemDisplaySlot = 13;
+    private static final int minusFiveSlot = 29;
+    private static final int minusOneSlot = 30;
+    private static final int addOneSlot = 32;
+    private static final int addFiveSlot = 33;
+    private static final int backSlot = 36;
+    private static final int buySlot = 44;
+
     private final ShopItem item;
     private final ItemStackHandler itemHandler;
     private final ServerPlayer player;
+
     private int count;
 
     public BuyMenu(int containerId, Inventory playerInventory, ServerPlayer player, int itemId) {
@@ -68,19 +75,19 @@ public class BuyMenu extends AbstractContainerMenu {
 
     private void refreshPage() {
         for (int i = 0; i < 45; i++) {
-            if (i == 13) {
+            if (i == itemDisplaySlot) {
                 itemHandler.insertItem(i, createDisplay(), false);
-            } else if (i == 29) {
+            } else if (i == minusFiveSlot) {
                 itemHandler.insertItem(i, createMinusFive(), false);
-            } else if (i == 30) {
+            } else if (i == minusOneSlot) {
                 itemHandler.insertItem(i, createMinusOne(), false);
-            } else if (i == 32) {
+            } else if (i == addOneSlot) {
                 itemHandler.insertItem(i, createAddOne(), false);
-            } else if (i == 33) {
+            } else if (i == addFiveSlot) {
                 itemHandler.insertItem(i, createAddFive(), false);
-            } else if (i == 36) {
+            } else if (i == backSlot) {
                 itemHandler.insertItem(i, createBack(), false);
-            } else if (i == 44) {
+            } else if (i == buySlot) {
                 itemHandler.insertItem(i, createAfford(), false);
             } else {
                 itemHandler.insertItem(i, createLine(), false);
@@ -89,8 +96,8 @@ public class BuyMenu extends AbstractContainerMenu {
     }
 
     private void refreshCount() {
-        itemHandler.setStackInSlot(13, createDisplay());
-        itemHandler.setStackInSlot(44, createAfford());
+        itemHandler.setStackInSlot(itemDisplaySlot, createDisplay());
+        itemHandler.setStackInSlot(buySlot, createAfford());
     }
 
     @Override
@@ -111,13 +118,13 @@ public class BuyMenu extends AbstractContainerMenu {
     }
     private static ItemStack createAddOne() {
         ItemStack stack = new ItemStack(Items.ARROW, 1);
-        stack.set(DataComponents.ITEM_NAME, Component.literal("增加一个").withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
+        stack.set(DataComponents.ITEM_NAME, Component.literal("增加一个").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_AQUA)));
         stack.set(DataComponents.LORE, ItemLore.EMPTY);
         return stack;
     }
     private static ItemStack createMinusOne() {
         ItemStack stack = new ItemStack(Items.ARROW, 1);
-        stack.set(DataComponents.ITEM_NAME, Component.literal("减少一个").withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
+        stack.set(DataComponents.ITEM_NAME, Component.literal("减少一个").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_AQUA)));
         stack.set(DataComponents.LORE, ItemLore.EMPTY);
         return stack;
     }
@@ -186,25 +193,25 @@ public class BuyMenu extends AbstractContainerMenu {
 
     @Override
     public void clicked(int slotId, int button, @NotNull ClickType clickType, @NotNull Player player) {
-        if (slotId == 29) {
+        if (slotId == minusFiveSlot) {
             count -= 5;
             if (count < 1) count = 1;
             refreshCount();
-        } else if (slotId == 30) {
+        } else if (slotId == minusOneSlot) {
             count--;
             if (count < 1) count = 1;
             refreshCount();
-        } else if (slotId == 32) {
+        } else if (slotId == addOneSlot) {
             count++;
             if (count > item.item().getCount()) count = item.item().getCount();
             refreshCount();
-        } else if (slotId == 33) {
+        } else if (slotId == addFiveSlot) {
             count += 5;
             if (count > item.item().getCount()) count = item.item().getCount();
             refreshCount();
-        } else if (slotId == 36) {
+        } else if (slotId == backSlot) {
             ShopCommands.openShop((ServerPlayer) player);
-        } else if (slotId == 44) {
+        } else if (slotId == buySlot) {
             if (ShopCommands.afford((ServerPlayer) player, item, count)) {
                 player.closeContainer();
             } else {

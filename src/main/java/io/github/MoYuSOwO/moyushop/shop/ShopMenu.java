@@ -1,12 +1,9 @@
-package io.github.MoYuSOwO.moyushop.guishop;
+package io.github.MoYuSOwO.moyushop.shop;
 
-import io.github.MoYuSOwO.moyushop.shop.ShopDB;
-import io.github.MoYuSOwO.moyushop.shop.ShopItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +15,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
