@@ -209,7 +209,7 @@ public class BuyMenu extends AbstractContainerMenu {
                 player.closeContainer();
             } else {
                 player.closeContainer();
-                player.sendSystemMessage(Component.literal("[商店系统] 购买成功！").withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.literal("[商店系统] 购买失败！你的椰块太少了！").withStyle(ChatFormatting.RED));
             }
         }
         else {
