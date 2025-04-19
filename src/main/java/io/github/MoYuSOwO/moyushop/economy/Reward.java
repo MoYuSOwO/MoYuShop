@@ -4,7 +4,10 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,9 +17,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
@@ -35,6 +41,9 @@ public class Reward {
         BlockPos pos = event.getPos();
         ServerPlayer player = (ServerPlayer) event.getPlayer();
         if (player.gameMode.isCreative()) return;
+        Registry<Enchantment> enchantmentRegistry = event.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        Holder<Enchantment> silkTouchHolder = enchantmentRegistry.getHolderOrThrow(Enchantments.SILK_TOUCH);
+        if (player.getMainHandItem().getEnchantmentLevel(silkTouchHolder) > 0) return;
         ItemStack coin = new ItemStack(targetItem, 1);
         if (blockState.is(BlockTags.CROPS)) {
             dropAccordingToRatio(player, pos, 0.01, coin);
@@ -154,7 +163,7 @@ public class Reward {
         int total = 0;
         for(int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (stack.getItem() == item) {
+            if (stack.getItem().equals(item)) {
                 total += stack.getCount();
             }
         }
@@ -165,9 +174,10 @@ public class Reward {
         for(int i = 0; i < inv.getContainerSize(); i++) {
             if (amount == 0) return;
             ItemStack stack = inv.getItem(i);
-            if (stack.getItem() == item) {
+            if (stack.getItem().equals(item)) {
                 if (stack.getCount() >= amount) {
                     stack.shrink(amount);
+                    return;
                 } else {
                     amount -= stack.getCount();
                     stack.setCount(0);
