@@ -18,27 +18,6 @@ public class ShopDB {
 
     public record IdWithTime(int id, long createdTime) {}
 
-    private static final Map<UUID, IdWithTime> PENDING_PURCHASES = new ConcurrentHashMap<>();
-
-    public static String generatePurchaseToken(int itemId) {
-        UUID token = UUID.randomUUID();
-        PENDING_PURCHASES.put(token, new IdWithTime(itemId, System.currentTimeMillis()));
-        return token.toString();
-    }
-
-    public static IdWithTime consumePurchaseToken(UUID token) {
-        if (PENDING_PURCHASES.containsKey(token)) {
-            return PENDING_PURCHASES.get(token);
-        }
-        return null;
-    }
-
-    public static void cleanExpiredTokens() {
-        PENDING_PURCHASES.entrySet().removeIf(entry ->
-                System.currentTimeMillis() - entry.getValue().createdTime() > 60000
-        );
-    }
-
     private ShopDB() {}
 
     public static void init(Path modDataDir) {

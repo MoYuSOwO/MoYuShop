@@ -45,13 +45,6 @@ public class Moyushop {
     }
 
     @SubscribeEvent
-    public static void onServerTick(ServerTickEvent.Post event) {
-        if (event.getServer().getTickCount() % 400 == 0) {
-            ShopDB.cleanExpiredTokens();
-        }
-    }
-
-    @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
         EconomyDB.shutdown();
         ShopDB.shutdown();
