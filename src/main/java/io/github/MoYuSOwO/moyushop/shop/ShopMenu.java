@@ -168,7 +168,7 @@ public class ShopMenu extends AbstractContainerMenu {
             ShopCommands.replaceShop((ServerPlayer) player, page - 1);
         } else if (slotId == 51 && page < maxPage) {
             ShopCommands.replaceShop((ServerPlayer) player, page + 1);
-        } else if (slotId < toId.length && toId[slotId] != -1) {
+        } else if (slotId < toId.length && slotId >= 0 && toId[slotId] != -1) {
             int arrayId = (page - 1) * itemsPerPage + toId[slotId];
             if (player.getUUID().equals(items.get(arrayId).sellerUuid())) {
                 ShopDB.removeItem(items.get(arrayId).id());
