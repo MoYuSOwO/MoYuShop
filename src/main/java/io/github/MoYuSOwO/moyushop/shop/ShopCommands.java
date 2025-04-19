@@ -1,5 +1,6 @@
 package io.github.MoYuSOwO.moyushop.shop;
 
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import io.github.MoYuSOwO.moyushop.economy.Economy;
 import io.github.MoYuSOwO.moyushop.economy.EconomyDB;
 import net.minecraft.ChatFormatting;
@@ -25,6 +26,29 @@ public class ShopCommands {
                     openShop(player);
                     return 1;
                 })
+        );
+        event.getDispatcher().register(Commands.literal("sell")
+                .then(Commands.argument("price", DoubleArgumentType.doubleArg(1))
+                        .executes(
+                                ctx -> {
+                                    Player player = ctx.getSource().getPlayer();
+                                    if (player == null) return 0;
+                                    double price = DoubleArgumentType.getDouble(ctx, "price");
+                                    ItemStack heldItem = player.getMainHandItem();
+                                    if (heldItem.isEmpty()) {
+                                        ctx.getSource().sendFailure(Component.literal("[商店系统] 你不能上架空气！"));
+                                        return 0;
+                                    }
+                                    ShopDB.addItem(player.getUUID(), heldItem.copy(), price);
+                                    heldItem.setCount(0);
+                                    ctx.getSource().sendSuccess(
+                                            () -> Component.literal("[商店系统] 成功上架物品！价格: " + price + " 椰块"),
+                                            false
+                                    );
+                                    return 1;
+                                }
+                        )
+                )
         );
     }
 
